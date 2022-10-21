@@ -20,6 +20,7 @@ class Entity():
 
     abstract: str = field(default="", repr=False)
     alternative_names: str = field(default="", repr=False)
+    category: str = field(default="", repr=False)
 
     def get_document(self):
-        return f"{self.name} - {self.ontology_type.name} - {self.abstract} - {self.alternative_names}\n"
+        return f"{self.name} - {self.ontology_type.name} - {self.abstract} - {self.alternative_names} - {self.category}\n"

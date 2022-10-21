@@ -92,6 +92,43 @@ def get_redirects(entities, filename):
                 e.alternative_names += f" {redirect}"
             except ValueError:
                 continue
+    print("Completed reading entity redirects")
+
+def get_categories(entities, filename):
+    with open(filename, "r", encoding="utf-8") as f:
+        f.__next__()
+        for i, line in enumerate(f):
+            if i % 100000 == 0:
+                print("Entity-category: Reading line:", i)
+            try:
+                s, p, o = line.split(" ", 2)
+                name = strip_dbpedia_url(s, "resource")
+                category = strip_dbpedia_url(o, "resource")
+                e = entities.get(name, None)
+                if e is None:
+                    continue
+                e.category += f" {category}"
+            except ValueError:
+                continue
+    print("Completed reading entity categories")
+
+def get_disambiguations(entities, filename):
+    with open(filename, "r", encoding="utf-8") as f:
+        f.__next__()
+        for i, line in enumerate(f):
+            if i % 100000 == 0:
+                print("Entity-disambiguations: Reading line:", i)
+            try:
+                s, p, o = line.split(" ", 2)
+                name = strip_dbpedia_url(s, "resource")
+                category = strip_dbpedia_url(o, "resource")
+                e = entities.get(name, None)
+                if e is None:
+                    continue
+                e.category += f" {category}"
+            except ValueError:
+                continue
+    print("Completed reading entity disambiguations")
 
 def strip_ontology_url(url) -> str:
     url = url.strip("<>")
@@ -110,6 +147,8 @@ if __name__ == "__main__":
     entities = get_entities("Data/dbpedia/instance_types_en.ttl", "Data/dbpedia/short_abstracts_en.ttl", nt)
 
     get_redirects(entities, "Data/dbpedia/redirects_en.ttl")
+    get_disambiguations(entities, "Data\dbpedia\disambiguations_en.ttl")
+    get_categories(entities, "Data/dbpedia/article_categories_en.ttl")
 
     with open("types-entities.pkl", "wb") as f:
         pickle.dump((list(nt.values()), list(entities.values())), f)
