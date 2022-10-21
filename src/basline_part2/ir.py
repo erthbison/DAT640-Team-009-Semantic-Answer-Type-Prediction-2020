@@ -4,8 +4,10 @@ from bisect import insort_left
 import pickle
 import json
 from preprocess_data import preprocess, InvertedIndex, FieldedInvertedIndex
+
 from rank_bm25 import BM25Okapi
 from retrieval_models import BM25, BM25f
+
 import numpy as np
 from numpy.typing import ArrayLike
 
@@ -63,7 +65,6 @@ class EntityCentric():
     def Score(self, query: Iterable[str]) -> List[Tuple[float, OntologyType]]:
         # Score all entities
         entity_score = self.retrieval_model.get_scores(query)
-        # entity_score = self.retrieval_model.Score(query)
 
         # Find the top k entities and their corresponding scores
         top_indices = np.argpartition(entity_score, -self.k)[-self.k:]
@@ -118,7 +119,7 @@ if __name__ == "__main__":
 
     print("Preparing entity retrieval")
     # bm25 = BM25(index, entities, b=0.75, k1=1.20)
-    bm25 = BM25Okapi(index)
+    # bm25 = BM25Okapi(index)
     ec = EntityCentric(np.array(types), np.array(entities), bm25, k=1000)
     with cProfile.Profile() as pr:
         print("Scoring query")
