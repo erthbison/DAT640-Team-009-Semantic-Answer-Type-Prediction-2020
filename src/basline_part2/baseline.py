@@ -11,9 +11,6 @@ from Classes import OntologyType
 from ir import EntityCentric
 from retrieval_models import BM25_sklearn
 
-# For progress bar. TODO: REMOVE
-import tqdm
-
 def select_types(score_type_list: Iterable[Tuple[float, OntologyType]]) -> List[str]:
     # from the list of types return a list of types on the same branch with the highest total score
     type_dict = {}
@@ -59,10 +56,9 @@ if __name__ == "__main__":
     with open(pred_file, "w") as write_f:
         # total = len(data)
         out = []
-        # for i, q in enumerate(data):
-        for q in tqdm.tqdm(data, total=len(data)):
-            # if (i + 1) % (total // 1000) == 0:
-            #     print(f"\r{round(100*(i/total), 1)}% processed...", end="")
+        for i, q in enumerate(data):
+            if (i + 1) % (total // 1000) == 0:
+                print(f"\r{round(100*(i/total), 1)}% processed...", end="")
             if q["question"] and q["category"] == "resource":
                 query = vectorizer.transform([q["question"]])
                 predicted = ec.Score(query)
