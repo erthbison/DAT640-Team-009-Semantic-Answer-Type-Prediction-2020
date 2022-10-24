@@ -4,8 +4,8 @@ import json
 import numpy as np
 from numpy import ndarray
 import sklearn.feature_extraction.text as sk_text
-import sklearn.linear_model as sk_linear
-
+from sklearn import svm
+import pickle
 #Data manipulation function
 
 def open_data(filename): #opens the datafile and creates a list of json objects (strings)
@@ -52,6 +52,18 @@ def question_target(filename): #Takes the dataset and generates a list of [quest
         targets.append(target)
     return questions,targets
 
+def f(x):
+    if x == "string":
+        return 2
+    if x == "date":
+        return 3
+    if x == "boolean":
+        return 0
+    if x == "resource":
+        return 4
+    if x == "number":
+        return 1
+#This function will return the features to train the model on
 def extract_features(
     train_dataset: List[str], test_dataset: List[str]
 ) -> Union[Tuple[ndarray, ndarray], Tuple[List[float], List[float]]]:
@@ -71,3 +83,25 @@ def extract_features(
     X =  vectorizer.fit_transform(train_dataset+test_dataset) #We have to provide the union of both vocabularies in order to train
     X_train,X_test = X[:len(train_dataset),],X[len(train_dataset):,]
     return X_train,X_test
+
+ls_train,label_train = question_target(r"C:\Users\ziadr\Desktop\dat640\smart-dataset\DAT640-Team-009-Semantic-Answer-Type-Prediction-2020\Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_train.json")
+ls_test,label_test = question_target(r"C:\Users\ziadr\Desktop\dat640\smart-dataset\DAT640-Team-009-Semantic-Answer-Type-Prediction-2020\Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_test.json")
+X_train,X_test = extract_features(ls_train,ls_test)
+label_train, label_test = [f(x) for x in label_train],[f(x) for x in label_test]
+
+
+#Model
+clf = svm.SVC()
+clf.fit(X_train,label_train)
+#THIS IS FOR TEST
+predictions = clf.predict(X_test)
+wins,losses = 0,0
+for i in range(len(predictions)):
+    if predictions[i] == label_test[i]:
+        wins += 1
+    else:
+        losses += 1 
+print(wins,losses)
+
+#THIS IS FOR SAVING THE MODEL
+pickle.dump(clf,open("model","wb"))
