@@ -1,5 +1,9 @@
-__pychache__
+__pycache__
 *.pyc
 .vscode
 
-Data/*
+venv/
+
+Data/pickle/*
+Data/dbpedia/*
+Data/dbpedia/
