@@ -11,27 +11,7 @@ from Classes import OntologyType
 from ir import EntityCentric
 from retrieval_models import BM25_sparse
 
-def select_types(score_type_list: Iterable[Tuple[float, OntologyType]]) -> List[str]:
-    # from the list of types return a list of types on the same branch with the highest total score
-    type_dict = {}
-    score_dict = defaultdict(lambda: 0, {t.name: s for s, t in score_type_list})
-    aggregated_score = defaultdict(lambda: 0)
-    for _, type in score_type_list:
-        name = type.name
-        type_dict[name] = type
-        while type is not None:
-            aggregated_score[name] += score_dict[name]
-            type = type.parent
-    type_name, _ = max(aggregated_score.items(), key=lambda x: x[1])
-    selected_type = type_dict[type_name]
-    out_types = []
-    while selected_type is not None and selected_type.name != "Thing":
-        if selected_type.name in aggregated_score:
-            out_types.append(selected_type.full_name)
-        selected_type = selected_type.parent
-    return out_types
-
-def select_types2(score_type_list):
+def select_types(score_type_list):
     selected_type = score_type_list[0][1]
     out_types = []
     while selected_type is not None and selected_type.name != "Thing":
@@ -80,11 +60,6 @@ if __name__ == "__main__":
                     "category": q["category"],
                     "type": select_types(predicted)
                 }
-                pred2 = {
-                    "id": q["id"],
-                    "category": q["category"],
-                    "type": select_types2(predicted)
-                }
             else:
                 # Just fill in this with the true data just so we get a measure
                 pred = {
@@ -92,16 +67,8 @@ if __name__ == "__main__":
                     "category": q["category"],
                     "type": q["type"]
                 }
-                pred2 = {
-                    "id": q["id"],
-                    "category": q["category"],
-                    "type": q["type"]
-                }
             out.append(pred)
-            out2.append(pred2)
         with open(pred_file, "w") as write_f:
             json.dump(out, write_f)
-        with open(pred_file2, "w") as write_f:
-            json.dump(out2, write_f)
         print("Finished processing k:", k)
         
