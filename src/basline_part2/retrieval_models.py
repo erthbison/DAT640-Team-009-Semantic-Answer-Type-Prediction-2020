@@ -1,6 +1,3 @@
-from typing import Iterable, List
-from numpy.typing import ArrayLike
-import math
 import numpy as np
 
 from scipy.sparse import csc_matrix
@@ -20,8 +17,6 @@ class BM25_sparse:
         self.__denom = self.k1 * (1 - self.b + self.b * d / avgd)
 
         # Get number of nonzero elements of each column, i.e. number of documents with that term in it
-        self.__term_in_docs = index.getnnz(0)
-        
 
     def get_scores(self, query: csc_matrix) -> np.ndarray:
         query = csc_matrix(query)
@@ -32,7 +27,7 @@ class BM25_sparse:
         ctd = self.index[:, terms]
 
         # Calculate idf for terms in the query
-        idf = np.log(num_docs / self.__term_in_docs[terms])
+        idf = np.log(num_docs / ctd.getnnz(0))
 
         # Calculate the score for each term for each document/entity
         score_per_term = ctd.multiply(1 + self.k1).multiply(idf) / (ctd + self.__denom)
