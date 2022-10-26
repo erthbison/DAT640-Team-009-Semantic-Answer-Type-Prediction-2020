@@ -11,7 +11,9 @@ from Classes import OntologyType
 from ir import EntityCentric
 from retrieval_models import BM25_sparse
 
-def select_types(score_type_list):
+def select_types(score_type_list: List[Tuple[float, OntologyType]]):
+    # Select the type with the highest score, and all its parents
+    # Ignore Thing since it is trivial
     selected_type = score_type_list[0][1]
     out_types = []
     while selected_type is not None and selected_type.name != "Thing":
