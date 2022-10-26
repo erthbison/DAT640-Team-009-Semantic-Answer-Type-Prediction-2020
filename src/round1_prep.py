@@ -89,7 +89,8 @@ ls_test,label_test = question_target(r"C:\Users\ziadr\Desktop\dat640\smart-datas
 X_train,X_test = extract_features(ls_train,ls_test)
 label_train, label_test = [f(x) for x in label_train],[f(x) for x in label_test]
 
-
+'''
+#THIS PART OF THE CODE IS NO LONGER NEEDED SINCE THE MODEL IS ALREADY TRAINED
 #Model
 clf = svm.SVC()
 clf.fit(X_train,label_train)
@@ -105,3 +106,4 @@ print(wins,losses)
 
 #THIS IS FOR SAVING THE MODEL
 pickle.dump(clf,open("model","wb"))
+'''
