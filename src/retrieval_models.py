@@ -9,10 +9,10 @@ class BM25_sparse:
         self.k1: float = k1
         self.b: float = b
 
-        num_docs, num_terms = self.index.shape
+        self.__num_docs, self.__num_terms = self.index.shape
 
         d = self.index.sum(-1)
-        avgd = d.sum() / num_docs
+        avgd = d.sum() / self.__num_docs
         # Precalculate some values
         self.__denom = self.k1 * (1 - self.b + self.b * d / avgd)
 
@@ -20,14 +20,13 @@ class BM25_sparse:
 
     def get_scores(self, query: csc_matrix) -> np.ndarray:
         query = csc_matrix(query)
-        num_docs, num_terms = self.index.shape
         _, terms = query.nonzero()
         
         # Get the term counts for the terms in the query
         ctd = self.index[:, terms]
 
         # Calculate idf for terms in the query
-        idf = np.log(num_docs / ctd.getnnz(0))
+        idf = np.log(self.__num_docs / ctd.getnnz(0))
 
         # Calculate the score for each term for each document/entity
         score_per_term = ctd.multiply(1 + self.k1).multiply(idf) / (ctd + self.__denom)

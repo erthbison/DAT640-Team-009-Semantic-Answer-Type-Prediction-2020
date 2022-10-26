@@ -84,8 +84,8 @@ def extract_features(
     X_train,X_test = X[:len(train_dataset),],X[len(train_dataset):,]
     return X_train,X_test
 
-ls_train,label_train = question_target(r"C:\Users\ziadr\Desktop\dat640\smart-dataset\DAT640-Team-009-Semantic-Answer-Type-Prediction-2020\Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_train.json")
-ls_test,label_test = question_target(r"C:\Users\ziadr\Desktop\dat640\smart-dataset\DAT640-Team-009-Semantic-Answer-Type-Prediction-2020\Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_test.json")
+ls_train,label_train = question_target(r"Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_train.json")
+ls_test,label_test = question_target(r"Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_test.json")
 X_train,X_test = extract_features(ls_train,ls_test)
 label_train, label_test = [f(x) for x in label_train],[f(x) for x in label_test]
 

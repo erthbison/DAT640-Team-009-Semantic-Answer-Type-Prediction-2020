@@ -1,11 +1,11 @@
 
 import json
 import pickle
-from collections import defaultdict
-from typing import Iterable, List, Tuple
+from typing import List, Tuple
 
 import numpy as np
 from sklearn.feature_extraction.text import HashingVectorizer
+
 
 from Classes import OntologyType
 from ir import EntityCentric
@@ -21,8 +21,7 @@ def select_types(score_type_list: List[Tuple[float, OntologyType]]):
         selected_type = selected_type.parent
     return out_types
 
-
-if __name__ == "__main__":
+def load_entity_retrieval(k=100) -> Tuple[EntityCentric, HashingVectorizer]:
     print("Loading data")
     with open("Data/pickle/types-entities.pkl", "rb") as f:
         types, entities = pickle.load(f)
@@ -35,7 +34,11 @@ if __name__ == "__main__":
     vectorizer = HashingVectorizer(alternate_sign=False, stop_words="english")
 
     bm25 = BM25_sparse(index)
-    ec = EntityCentric(np.array(types), np.array(entities), bm25, k=100)
+    ec = EntityCentric(np.array(types), np.array(entities), bm25, k=k)
+    return ec, vectorizer
+
+if __name__ == "__main__":
+    
 
     question_file = "Data/smart-dataset-master/datasets/DBpedia/smarttask_dbpedia_train.json"
     pred_file = "Data/prediction_train.json"
@@ -45,7 +48,7 @@ if __name__ == "__main__":
 
     print("Begin processing questions")
     for k in [75, 100, 125, 150]:
-        ec = EntityCentric(np.array(types), np.array(entities), bm25, k=k)
+        ec, vectorizer = load_entity_retrieval(k)
         pred_file = f"Data/prediction_train-{k}.json"
         pred_file2 = f"Data/prediction_train2-{k}.json"
         total = len(data)

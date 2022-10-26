@@ -1,4 +1,4 @@
-from typing import Tuple, Iterable, Union
+from typing import Tuple, Union
 from dataclasses import dataclass, field
 
 @dataclass(order=True)
