@@ -88,27 +88,6 @@ def extract_literal(entity_repr: Dict[str, str], filename: str):
                 continue
     print("Completed reading entity abstracts")
 
-# def get_abstract(entity_repr: Dict[str, str], filename: str):
-#      # Get abstract data for all entities
-#     with open(filename, "r", encoding="utf-8") as f:
-#         f.__next__()
-#         for i, line in enumerate(f):
-#             if i % 100000 == 0:
-#                 print("Entity-Abstracts: Reading line:", i)
-#             line = line.strip("\n. ")
-#             try:
-#                 s, p, o = line.split(" ", 2)
-#                 name = strip_dbpedia_url(s, "resource")
-#                 e = entity_repr.get(name, None)
-#                 if e is None:
-#                     continue
-#                 e += f" {o}"
-#                 entity_repr[name] = e
-#             except ValueError:
-#                 continue
-#     print("Completed reading entity abstracts")
-
-
 def extract_uri(entity_repr: Dict[str, str], filename: str):
     """Extracts uri value from file, strips the uri and adds the remainder to the entity representation of its respective entity"""
     with open(filename, "r", encoding="utf-8") as f:
@@ -128,44 +107,6 @@ def extract_uri(entity_repr: Dict[str, str], filename: str):
             except ValueError:
                 continue
     print("Completed reading entity redirects")
-
-# def get_categories(entity_repr: Dict[str, str], filename: str):
-#     with open(filename, "r", encoding="utf-8") as f:
-#         f.__next__()
-#         for i, line in enumerate(f):
-#             if i % 100000 == 0:
-#                 print("Entity-category: Reading line:", i)
-#             try:
-#                 s, p, o = line.split(" ", 2)
-#                 name = strip_dbpedia_url(s, "resource")
-#                 category = strip_dbpedia_url(o, "resource")
-#                 e = entity_repr.get(name, None)
-#                 if e is None:
-#                     continue
-#                 e += f" {category}"
-#                 entity_repr[name] = e
-#             except ValueError:
-#                 continue
-#     print("Completed reading entity categories")
-
-# def get_disambiguations(entity_repr: Dict[str, str], filename: str):
-#     with open(filename, "r", encoding="utf-8") as f:
-#         f.__next__()
-#         for i, line in enumerate(f):
-#             if i % 100000 == 0:
-#                 print("Entity-disambiguations: Reading line:", i)
-#             try:
-#                 s, p, o = line.split(" ", 2)
-#                 name = strip_dbpedia_url(s, "resource")
-#                 category = strip_dbpedia_url(o, "resource")
-#                 e = entity_repr.get(name, None)
-#                 if e is None:
-#                     continue
-#                 e += f" {category}"
-#                 entity_repr[name] = e
-#             except ValueError:
-#                 continue
-#     print("Completed reading entity disambiguations")
 
 def strip_ontology_url(url) -> str:
     """Strips the uri of an ontology element"""
