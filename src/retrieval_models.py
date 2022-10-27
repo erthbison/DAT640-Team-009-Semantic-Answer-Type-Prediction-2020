@@ -3,7 +3,11 @@ import numpy as np
 from scipy.sparse import csc_matrix
 
 class BM25_sparse:
-    def __init__(self, index, k1=1.2, b=0.75):
+    def __init__(self, index: csc_matrix, k1=1.2, b=0.75):
+        """Implementation of the BM25 retrieval model using sparse document-term matrix representation for the index.
+        
+        The class implements the interface for a retrieval model described in EntityCentric.
+        """
         # document-term matrix. row: document, column: terms
         self.index: csc_matrix = csc_matrix(index)
         self.k1: float = k1
@@ -16,9 +20,8 @@ class BM25_sparse:
         # Precalculate some values
         self.__denom = self.k1 * (1 - self.b + self.b * d / avgd)
 
-        # Get number of nonzero elements of each column, i.e. number of documents with that term in it
-
-    def get_scores(self, query: csc_matrix) -> np.ndarray:
+    def get_scores(self, query: csc_matrix) -> np.ndarray[float]:
+        """Score all documents for the provided query"""
         query = csc_matrix(query)
         _, terms = query.nonzero()
         

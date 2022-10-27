@@ -12,6 +12,10 @@ from ir import EntityCentric
 from retrieval_models import BM25_sparse
 
 def select_types(score_type_list: List[Tuple[float, OntologyType]]):
+    """Select a list of types out of a provided list of (score, type) tuples
+    
+    Selects the top scoring type and all types directly higher than it in the hierarchy 
+    """
     # Select the type with the highest score, and all its parents
     # Ignore Thing since it is trivial
     selected_type = score_type_list[0][1]
@@ -22,6 +26,7 @@ def select_types(score_type_list: List[Tuple[float, OntologyType]]):
     return out_types
 
 def load_entity_retrieval(k=100) -> Tuple[EntityCentric, HashingVectorizer]:
+    """Loads the data needed for entity retrieval and instantiates objects used"""
     print("Loading data")
     with open("Data/pickle/types-entities.pkl", "rb") as f:
         types, entities = pickle.load(f)

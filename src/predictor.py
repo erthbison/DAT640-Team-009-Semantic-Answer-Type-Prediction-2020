@@ -1,9 +1,8 @@
 from typing import Tuple, Union
 
 import pickle
-from sklearn import svm
-from round1_prep import question_target,f,extract_features
 
+from round1_prep import question_target, f, extract_features
 from baseline import load_entity_retrieval, select_types
 
 import json
