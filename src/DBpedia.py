@@ -185,13 +185,17 @@ if __name__ == "__main__":
     nt = get_types("Data/dbpedia/dbpedia_2016-10.nt")
     entities = get_entities("Data/dbpedia/instance_types_en.ttl", nt)
 
+    # Creates a basic entity representation for all entities
     entity_repr = {e.name: f"{e.name} {e.ontology_type.name}" for e in entities.values()}
 
+
+    # Add to entity representation
     extract_literal(entity_repr, "Data/dbpedia/long_abstracts_en.ttl")
     extract_uri(entity_repr, "Data/dbpedia/redirects_en.ttl")
     extract_uri(entity_repr, "Data/dbpedia/disambiguations_en.ttl")
     extract_uri(entity_repr, "Data/dbpedia/article_categories_en.ttl")
 
+    # index entity representation using Hashing vectorizer
     print("Creating index")
     vectorizer = HashingVectorizer(alternate_sign=False, stop_words="english")
     index = vectorizer.transform([e for  e in entity_repr.values()])
