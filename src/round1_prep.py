@@ -1,35 +1,24 @@
-from typing import List, Tuple, Union, Dict
-import re
 import json
-import numpy as np
-from numpy import ndarray
-import sklearn.feature_extraction.text as sk_text
-from sklearn import svm
 import pickle
-#Data manipulation function
+import re
+from typing import List, Tuple, Union
 
-def open_data(filename): #opens the datafile and creates a list of json objects (strings)
-    f = open(filename,'r')
-    lines = f.readlines()
-    add = False
-    list_of_json = [""]
-    for line in lines:
-        if "}" in line and len(line) == 5:
-            list_of_json[-1] += "}"
-            add = False
-            list_of_json.append("")
-        if "{" in line and len(line) == 4:
-            add = True
-        if add:
-            list_of_json[-1] += line
-    f.close()
-    list_of_json[-1] = list_of_json[-1][:-1]
-    return list_of_json
-        
-def parse(json_data): #returns a data object with attributes "id","question"...
-    return json.loads(json_data)
+from numpy import ndarray
+from sklearn import svm
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-def target_type(json_object): #this function encapsulates the types to facilitate the ML process
+# File location for training and test file
+train_file = r"Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_train.json"
+test_file = r"Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_test.json"
+
+def target_type(json_object): 
+    """Find the target type for a question object.
+    
+    The ML predictor is responsible for identifying the categories as well as the types for the Literal and the boolean category. 
+    We therefore use the types as the target for these categories. 
+    For questions where the category is resource Part 2 will be used to identify the type, so the category will be used as label. 
+    """
+    #this function encapsulates the types to facilitate the ML process
     #It returns the target type of the json_object
     #boolean, string, date, number or resource
     if json_object["category"] == "resource":
@@ -37,22 +26,29 @@ def target_type(json_object): #this function encapsulates the types to facilitat
     else:
         return json_object["type"][0]
 
+def question_target(filename: str) -> Tuple[List[str], List[str]]: 
+    """
+    Create a list of preprocessed questions and a list of targets.
 
-def preprocess(doc: str) -> List[str]: #Preprocessing without stopwords
-    return [
-        term
-        for term in re.sub(r"[^\w]|_", " ", doc).lower().split()
-    ]
-def question_target(filename): #Takes the dataset and generates a list of [question,type]
+
+    The i-th question correspond to the i-th target.    
+    """
+    #Takes the dataset and generates a list of [question,type]
     questions,targets = [],[]
-    for elt in open_data(filename):
-        parsed = parse(elt)
-        question,target = parsed["question"],target_type(parsed)
-        questions.append(" ".join(preprocess(str(question))))
+    with open(filename, "r") as f:
+        data = json.load(f)
+    for parsed in data:
+        question, target = parsed["question"], target_type(parsed)
+        questions.append(question or "")
         targets.append(target)
     return questions,targets
 
-def f(x):
+def get_label(x: str) -> int:
+    """Maps from a target type to an integer labels used by the ML algorithm. 
+    
+    The target type is either one of the three Literal types, the Boolean type or resource. 
+    See the target_type() function for a more detailed description
+    """
     if x == "string":
         return 2
     if x == "date":
@@ -63,7 +59,22 @@ def f(x):
         return 4
     if x == "number":
         return 1
-#This function will return the features to train the model on
+
+def get_category_type(x: int) -> Tuple[str, Union[str, None]]:
+    """Maps from a ML label to a category and a type.
+    
+    If the category is resource the type is None, since the ML does not find the types of resources"""
+    if x == 2:
+        return "literal", "string"
+    if x == 3:
+        return "literal", "date"
+    if x == 0:
+        return "boolean", "boolean"
+    if x == 4:
+        return "resource", None
+    if x == 1:
+        return "literal", "number"
+
 def extract_features(
     train_dataset: List[str], test_dataset: List[str]
 ) -> Union[Tuple[ndarray, ndarray], Tuple[List[float], List[float]]]:
@@ -79,31 +90,28 @@ def extract_features(
         A tuple of of two lists. The lists contain extracted features for 
           training and testing dataset respectively.
     """
-    vectorizer = sk_text.TfidfVectorizer()
+    #This function will return the features to train the model on
+    vectorizer = TfidfVectorizer()
     X =  vectorizer.fit_transform(train_dataset+test_dataset) #We have to provide the union of both vocabularies in order to train
-    X_train,X_test = X[:len(train_dataset),],X[len(train_dataset):,]
-    return X_train,X_test
+    X_train,X_test = X[:len(train_dataset),], X[len(train_dataset):,]
+    return X_train, X_test
 
-ls_train,label_train = question_target(r"Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_train.json")
-ls_test,label_test = question_target(r"Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_test.json")
-X_train,X_test = extract_features(ls_train,ls_test)
-label_train, label_test = [f(x) for x in label_train],[f(x) for x in label_test]
 
-'''
-#THIS PART OF THE CODE IS NO LONGER NEEDED SINCE THE MODEL IS ALREADY TRAINED
-#Model
-clf = svm.SVC()
-clf.fit(X_train,label_train)
-#THIS IS FOR TEST
-predictions = clf.predict(X_test)
-wins,losses = 0,0
-for i in range(len(predictions)):
-    if predictions[i] == label_test[i]:
-        wins += 1
-    else:
-        losses += 1 
-print(wins,losses)
+if __name__ == "__main__":
+    # Prepare questions and labels for train and test data
+    print("Preprocessing data")
+    ls_train, label_train = question_target(train_file)
+    ls_test, label_test = question_target(test_file)
 
-#THIS IS FOR SAVING THE MODEL
-pickle.dump(clf,open("model","wb"))
-'''
+    X_train,X_test = extract_features(ls_train, ls_test)
+    label_train, label_test = [get_label(x) for x in label_train],[get_label(x) for x in label_test]
+
+    # Instantiate and train ML model
+    print("Training model")
+    clf = svm.SVC()
+    clf.fit(X_train,label_train)
+
+    # Load model
+    print("Saving model")
+    with open("./Data/pickle/model.pkl","wb") as f:
+        pickle.dump(clf, f)

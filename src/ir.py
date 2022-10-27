@@ -1,8 +1,10 @@
 from typing import Iterable, List, Tuple
-from Classes import Entity, OntologyType
 
 import numpy as np
 from numpy.typing import ArrayLike
+
+from Classes import Entity, OntologyType
+
 
 class EntityCentric():
     def __init__(self, types: np.ndarray[OntologyType], entities: np.ndarray[Entity], retrieval_model, k:int = 10, num_types: int = 10) -> None:

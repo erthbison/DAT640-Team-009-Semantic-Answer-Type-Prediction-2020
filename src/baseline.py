@@ -6,10 +6,10 @@ from typing import List, Tuple
 import numpy as np
 from sklearn.feature_extraction.text import HashingVectorizer
 
-
 from Classes import OntologyType
 from ir import EntityCentric
 from retrieval_models import BM25_sparse
+
 
 def select_types(score_type_list: List[Tuple[float, OntologyType]]):
     """Select a list of types out of a provided list of (score, type) tuples

@@ -1,5 +1,6 @@
-from typing import Tuple, Union
 from dataclasses import dataclass, field
+from typing import Tuple, Union
+
 
 @dataclass(order=True)
 class OntologyType():

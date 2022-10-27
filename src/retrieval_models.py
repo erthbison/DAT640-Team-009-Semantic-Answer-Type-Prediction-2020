@@ -1,6 +1,6 @@
 import numpy as np
-
 from scipy.sparse import csc_matrix
+
 
 class BM25_sparse:
     def __init__(self, index: csc_matrix, k1=1.2, b=0.75):
