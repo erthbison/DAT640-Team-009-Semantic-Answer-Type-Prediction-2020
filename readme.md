@@ -14,7 +14,7 @@ To prepare for Part 1 run the file [`src/round1_prep.py](./src/round1_prep.py). 
 python src/round1_prep.py
 ```
 
-To create the entity representation the following files should be downloaded from the dbpedia dump and be placed in the [`Data/Dbpedia/`](./Data/dbpedia/) folder.
+To create the entity representation the following files should be extracted from the dbpedia dump and be placed in the [`Data/Dbpedia/`](./Data/dbpedia/) folder.
 
 - `dbpedia_2016.nt`
 - `instance_types_en.ttl`
