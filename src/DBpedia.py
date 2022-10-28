@@ -86,7 +86,7 @@ def extract_literal(entity_repr: Dict[str, str], filename: str):
                 entity_repr[name] = e
             except ValueError:
                 continue
-    print("Completed reading entity abstracts")
+    print("\nCompleted extracting literals")
 
 def extract_uri(entity_repr: Dict[str, str], filename: str):
     """Extracts uri value from file, strips the uri and adds the remainder to the entity representation of its respective entity"""
@@ -106,7 +106,7 @@ def extract_uri(entity_repr: Dict[str, str], filename: str):
                 entity_repr[name] = e
             except ValueError:
                 continue
-    print("Completed reading entity redirects")
+    print("\nCompleted extracting URIs")
 
 def strip_ontology_url(url) -> str:
     """Strips the uri of an ontology element"""
