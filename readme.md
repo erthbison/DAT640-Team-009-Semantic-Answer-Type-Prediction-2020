@@ -2,6 +2,12 @@
 
 ## How to run
 
+Required packages can be found in the `requirements.txt` file.
+
+```bash
+pip install -r requirements.txt
+```
+
 To prepare for Part 1 run the file [`src/round1_prep.py](./src/round1_prep.py). This will preprocess the questions and train the ML predictor.
 
 ```bash
