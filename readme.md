@@ -42,4 +42,3 @@ The scoring can be obtained by running the following command:
 ```batch
 python Data\smart-dataset-master\evaluation\dbpedia\evaluate.py --type_hierarchy_tsv=Data\smart-dataset-master\evaluation\dbpedia\dbpedia_types.tsv --ground_truth_json=Data\smart-dataset-master\datasets\DBpedia\smarttask_dbpedia_test.json --system_output_json=Data/baseline_predictions.json
 ```
-
