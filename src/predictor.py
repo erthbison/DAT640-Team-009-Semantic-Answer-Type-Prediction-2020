@@ -1,7 +1,7 @@
 import json
 import pickle
 
-from baseline import load_entity_retrieval, select_types
+from helper_functions import load_entity_retrieval, select_types
 from round1_prep import (extract_features, get_category_type, get_label,
                          question_target, test_file, train_file)
 
