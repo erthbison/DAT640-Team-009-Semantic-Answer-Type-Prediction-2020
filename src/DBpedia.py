@@ -50,7 +50,7 @@ def get_entities(filename, types: Dict[str, OntologyType]):
         f.__next__() # skips header file
         for i, line in enumerate(f):
             if i % 100000 == 0:
-                print("Entity-Types: Reading line:", i)
+                print(f"\rEntity-Types: Reading line:", i, end="")
             line = line.strip("\n. ")
             try:
                 s, p, o = line.split(" ", 2)
@@ -64,7 +64,7 @@ def get_entities(filename, types: Dict[str, OntologyType]):
                 ontology_type.num_entities += 1
             except ValueError:
                 continue
-    print("Completed reading entity types")
+    print("\nCompleted reading entity types")
     return entities
 
 def extract_literal(entity_repr: Dict[str, str], filename: str):
@@ -86,7 +86,7 @@ def extract_literal(entity_repr: Dict[str, str], filename: str):
                 entity_repr[name] = e
             except ValueError:
                 continue
-    print("\nCompleted extracting literals")
+    print(f"\nCompleted extracting literals - {filename}")
 
 def extract_uri(entity_repr: Dict[str, str], filename: str):
     """Extracts uri value from file, strips the uri and adds the remainder to the entity representation of its respective entity"""
@@ -106,7 +106,7 @@ def extract_uri(entity_repr: Dict[str, str], filename: str):
                 entity_repr[name] = e
             except ValueError:
                 continue
-    print("\nCompleted extracting URIs")
+    print(f"\nCompleted extracting URIs - {filename}")
 
 def strip_ontology_url(url) -> str:
     """Strips the uri of an ontology element"""
