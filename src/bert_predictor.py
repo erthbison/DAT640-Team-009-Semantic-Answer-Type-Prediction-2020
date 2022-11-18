@@ -6,6 +6,10 @@ from DBpedia import get_types
 from round1_prep import (extract_features, get_category_type, get_label,
                          question_target, test_file, train_file)
 from pred_bert import predict
+
+# Description: This file is used to predict the type of a question using BERT
+# The model is trained on the training data and the test data is used to predict the type of the question
+# The predicted type is then compared with the actual type of the question to get the accuracy of the model
 if __name__ == "__main__":
     print("Starting Part 1")
     print("Loading model")
@@ -13,7 +17,7 @@ if __name__ == "__main__":
         model = pickle.load(f)
 
     print("Preparing data")
-    #Preparations
+    # Prepare the data for prediction
     ls_train,label_train = question_target(train_file)
     ls_test,label_test = question_target(test_file)
     X_train,X_test = extract_features(ls_train, ls_test)
@@ -38,6 +42,9 @@ if __name__ == "__main__":
     dico = get_types("dbpedia_2016-10.nt") #Path has to be changed 
     print("Starting prediction")
     model = torch.load("./models")
+    # For each question, predict the type. First, we get the types of the entities in the question
+    # Then, we predict the type of the question using BERT
+    # Finally, we compare the predicted type with the actual type of the question
     for i, (category, question) in enumerate(zip(results, questions)):
         category, q_type = get_category_type(category)
         if (i + 1) % (total // 1000) == 0:
