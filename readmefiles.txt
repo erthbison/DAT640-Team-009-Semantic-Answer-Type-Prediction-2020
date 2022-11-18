@@ -38,8 +38,14 @@ predictor.py
  
 round1_prep.py 
 ''''''''''''''''''''''''''''''
+BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers.
+ As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, 
+such as question answering and language inference, without substantial task-specific architecture modifications
 bert_predictor.py
+''''''''''''''''''''''''''''''
+For Calculated The accuracy
 bert_resource.py
+
 bert_test.py
 
 To evaluate the model run evaluate.py with generated JSON file
