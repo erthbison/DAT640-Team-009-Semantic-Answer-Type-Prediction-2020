@@ -8,6 +8,12 @@ Required packages can be found in the `requirements.txt` file.
 pip install -r requirements.txt
 ```
 
+Please note that, in case of a CUDA error during the execution, you may need to install pytorch and torchvision the following way:
+
+```bash
+conda install pytorch torchvision pytorch-cuda=11.7 -c pytorch -c nvidia
+```
+
 To prepare for Part 1 run the file [`src/round1_prep.py](./src/round1_prep.py). This will preprocess the questions and train the ML predictor.
 
 ```bash
